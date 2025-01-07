@@ -1,11 +1,16 @@
 package main
 
 import (
+	"yusrilaprial/backend-api/controllers"
+	"yusrilaprial/backend-api/db"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
+
+	db.ConnectDataBase()
 
 	router.GET("/", func(c *gin.Context) {
 
@@ -13,6 +18,10 @@ func main() {
 			"message": "Hello World!",
 		})
 	})
+
+	router.GET("/posts", controllers.FindPosts)
+
+	router.POST("/posts", controllers.StorePost)
 
 	router.Run(":3000")
 }
