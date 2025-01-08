@@ -30,5 +30,11 @@ func main() {
 
 	router.POST("/posts", controllers.StorePost)
 
-	router.Run(":3000")
+	router.GET("/posts/:id", controllers.FindPostById)
+
+	router.PUT("/posts/:id", controllers.UpdatePost)
+
+	router.DELETE("/posts/:id", controllers.DeletePost)
+
+	router.Run(":8080")
 }

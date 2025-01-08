@@ -42,9 +42,70 @@ func StorePost(c *gin.Context) {
 	}
 	db.DB.Create(&post)
 
-	c.JSON(201, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Post Created Successfully",
 		"data": post,
+	})
+}
+
+func FindPostById(c *gin.Context) {
+	var post models.Post
+	if err := db.DB.Where("id = ?", c.Param("id")).First(&post).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Data not found"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"success": true,
+		"message": "Detail Data Post By ID : " + c.Param("id"),
+		"data": post,
+	})
+}
+
+func UpdatePost(c *gin.Context) {
+	var post models.Post
+	if err := db.DB.Where("id = ?", c.Param("id")).First(&post).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Data not found"})
+		return
+	}
+
+	var input models.ValidatePostInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		var ve validator.ValidationErrors
+		if errors.As(err, &ve) {
+			out := make([]models.ErrorMsg, len(ve))
+			for i, fe := range ve {
+				out[i] = models.ErrorMsg{Field: fe.Field(), Message: utils.GetErrorMsg(fe)}
+			}
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": out})
+		}
+		return
+	}
+
+	db.DB.Model(&post).Updates(models.Post{
+		Title: input.Title,
+		Content: input.Content,
+	})
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Post Updated Successfully",
+		"data": post,
+	})
+}
+
+func DeletePost(c *gin.Context) {
+	var post models.Post
+	if err := db.DB.Where("id = ?", c.Param("id")).First(&post).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Data not found"})
+		return
+	}
+
+	db.DB.Delete(&post)
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Post Deleted Successfully",
 	})
 }
