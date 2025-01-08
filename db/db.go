@@ -1,6 +1,7 @@
 package db
 
 import (
+	"yusrilaprial/backend-api/configs"
 	"yusrilaprial/backend-api/models"
 
 	"gorm.io/driver/mysql"
@@ -9,8 +10,9 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDataBase() {
-	db, err := gorm.Open(mysql.Open("root:@tcp(127.0.0.1:3306)/db_go_api"), &gorm.Config{})
+func ConnectDatabase() {
+	dsn := configs.DB_USERNAME + ":" + configs.DB_PASSWORD + "@tcp(" + configs.DB_HOST + ":" + configs.DB_PORT + ")/" + configs.DB_NAME + "?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

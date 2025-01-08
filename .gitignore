@@ -1,1 +1,5 @@
+vendor/
+.env
+main
+main.exe
 backend-api.exe

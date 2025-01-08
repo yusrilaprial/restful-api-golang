@@ -37,7 +37,7 @@ func StorePost(c *gin.Context) {
 	}
 
 	post := models.Post{
-		Title:   input.Title,
+		Title: input.Title,
 		Content: input.Content,
 	}
 	db.DB.Create(&post)
@@ -45,6 +45,6 @@ func StorePost(c *gin.Context) {
 	c.JSON(201, gin.H{
 		"success": true,
 		"message": "Post Created Successfully",
-		"data":    post,
+		"data": post,
 	})
 }
